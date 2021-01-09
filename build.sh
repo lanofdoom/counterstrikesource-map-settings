@@ -1,0 +1,21 @@
+#!/bin/bash -ue
+
+tools=https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6502-linux.tar.gz
+
+tmp_dir=$(mktemp -d)
+echo using temporary folder: $tmp_dir >&2
+clean () {
+    rm -rf $tmp_dir
+    echo deleted temporary folder >&2
+}
+trap clean EXIT
+
+curl $tools -o $tmp_dir/tools.tar.gz
+tar -xf $tmp_dir/tools.tar.gz -C $tmp_dir
+$tmp_dir/addons/sourcemod/scripting/spcomp lan_of_doom_map_settings.sp
+
+mkdir build
+mv lan_of_doom_map_settings.smx build/lan_of_doom_map_settings.smx
+tar -czvf build/lan_of_doom_map_settings_source.tar.gz build.sh lan_of_doom_map_settings.sp LICENSE README.md
+
+echo created build/lan_of_doom_map_settings.smx
