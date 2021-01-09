@@ -18,7 +18,7 @@ public const Plugin myinfo = {
     version = "1.0.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
-public void OnMapStart() {
+public void OnConfigsExecuted() {
   g_previous_airaccelerate = GetConVarInt(g_airaccelerate_cvar);
   g_previous_freezetime = GetConVarInt(g_freezetime_cvar);
   g_previous_gravity = GetConVarInt(g_gravity_cvar);
