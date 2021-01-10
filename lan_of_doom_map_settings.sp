@@ -15,7 +15,7 @@ public const Plugin myinfo = {
     name = "LAN of DOOM Map Settings",
     author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.0.0",
+    version = "1.1.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
 public void OnConfigsExecuted() {
