@@ -31,8 +31,14 @@ public void OnConfigsExecuted() {
     SetConVarInt(g_gravity_cvar, 220);
   }
 
-  if (StrEqual(map_name, "fy_iceworld_cssource") ||
-      StrEqual(map_name, "fy_pool_day_reloaded") ||
+  if (StrEqual(map_name, "aim_ag_texture_city") ||
+      StrEqual(map_name, "breakfloor") ||
+      StrEqual(map_name, "fun_allinone_css_v2") ||
+      StrEqual(map_name, "fy_iceworld2k9") ||
+      StrEqual(map_name, "fy_iceworld_cssource") ||
+      StrEqual(map_name, "fy_poolday_reloaded") ||
+      StrEqual(map_name, "fy_simpsons_h") ||
+      StrEqual(map_name, "glasstrap_final") ||
       StrEqual(map_name, "scoutzknivez")) {
     SetConVarInt(g_freezetime_cvar, 0);
   }
