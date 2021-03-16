@@ -13,12 +13,6 @@ jobs:
       - name: Compile plugin
         run: ./build.sh
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.1
-        with:
-          name: compiled-plugin
-          path: build/lan_of_doom_map_settings.smx
-
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:

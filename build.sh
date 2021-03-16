@@ -14,8 +14,12 @@ curl $tools -o $tmp_dir/tools.tar.gz
 tar -xf $tmp_dir/tools.tar.gz -C $tmp_dir
 $tmp_dir/addons/sourcemod/scripting/spcomp lan_of_doom_map_settings.sp
 
-mkdir build
-mv lan_of_doom_map_settings.smx build/lan_of_doom_map_settings.smx
+mkdir -p build/addons/sourcemod/plugins
+mv lan_of_doom_map_settings.smx build/addons/sourcemod/plugins/lan_of_doom_map_settings.smx
+cd build
+tar -czvf lan_of_doom_map_settings.tar.gz addons
+rm -rf addons
+cd ..
 tar -czvf build/lan_of_doom_map_settings_source.tar.gz build.sh lan_of_doom_map_settings.sp LICENSE README.md
 
 echo created build/lan_of_doom_map_settings.smx
