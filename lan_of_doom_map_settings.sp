@@ -53,7 +53,7 @@ public void OnConfigsExecuted() {
     return;
   }
 
-  map_name[4] = '\0';
+  map_name[3] = '\0';
   if (StrEqual(map_name, "gg_")) {
     SetConVarBool(deathmatch_cvar, true);
     SetConVarBool(gungame_cvar, true);
