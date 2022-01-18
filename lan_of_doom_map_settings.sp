@@ -34,7 +34,6 @@ public void OnConfigsExecuted() {
   if (StrEqual(map_name, "aim_ag_texture_city") ||
       StrEqual(map_name, "breakfloor") ||
       StrEqual(map_name, "fun_allinone_css_v2") ||
-      StrEqual(map_name, "fy_iceworld2k9") ||
       StrEqual(map_name, "fy_iceworld_cssource") ||
       StrEqual(map_name, "fy_poolday_reloaded") ||
       StrEqual(map_name, "fy_simpsons_h") ||
@@ -42,6 +41,29 @@ public void OnConfigsExecuted() {
       StrEqual(map_name, "scoutzknivez")) {
     SetConVarInt(g_freezetime_cvar, 0);
   }
+
+  Handle deathmatch_cvar = FindConVar("sm_lanofdoom_deathmatch_enabled");
+  if (deathmatch_cvar == INVALID_HANDLE) {
+    return;
+  }
+
+  Handle gungame_cvar = FindConVar("sm_lanofdoom_gungame_enabled");
+  if (gungame_cvar == INVALID_HANDLE) {
+    CloseHandle(deathmatch_cvar);
+    return;
+  }
+
+  map_name[4] = '\0';
+  if (StrEqual(map_name, "gg_")) {
+    SetConVarBool(deathmatch_cvar, true);
+    SetConVarBool(gungame_cvar, true);
+  } else {
+    SetConVarBool(deathmatch_cvar, false);
+    SetConVarBool(gungame_cvar, false);
+  }
+
+  CloseHandle(deathmatch_cvar);
+  CloseHandle(gungame_cvar);
 }
 
 public void OnMapEnd() {
