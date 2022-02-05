@@ -11,17 +11,20 @@ int g_previous_freezetime;
 Handle g_gravity_cvar;
 int g_previous_gravity;
 
+Handle g_friendyfire_cvar;
+bool g_previous_friendlyfire;
+
 public const Plugin myinfo = {
-    name = "LAN of DOOM Map Settings",
-    author = "LAN of DOOM",
+    name = "Map Settings", author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.2.0",
+    version = "1.3.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
 public void OnConfigsExecuted() {
   g_previous_airaccelerate = GetConVarInt(g_airaccelerate_cvar);
   g_previous_freezetime = GetConVarInt(g_freezetime_cvar);
   g_previous_gravity = GetConVarInt(g_gravity_cvar);
+  g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
 
   char map_name[MAX_MAP_NAME_LENGTH];
   GetCurrentMap(map_name, MAX_MAP_NAME_LENGTH);
@@ -42,27 +45,62 @@ public void OnConfigsExecuted() {
     SetConVarInt(g_freezetime_cvar, 0);
   }
 
-  Handle deathmatch_cvar = FindConVar("sm_lanofdoom_deathmatch_enabled");
-  if (deathmatch_cvar == INVALID_HANDLE) {
+  Handle round_timer_cvar = FindConVar("sm_lanofdoom_disable_round_timer");
+  if (round_timer_cvar == INVALID_HANDLE) {
+    return;
+  }
+
+  Handle respawn_enabled_cvar = FindConVar("sm_lanofdoom_respawn_enabled");
+  if (round_timer_cvar == INVALID_HANDLE) {
+    CloseHandle(round_timer_cvar);
+    return;
+  }
+
+  Handle remove_objectives_cvar = FindConVar("sm_lanofdoom_remove_objectives");
+  if (round_timer_cvar == INVALID_HANDLE) {
+    CloseHandle(round_timer_cvar);
+    CloseHandle(respawn_enabled_cvar);
+    return;
+  }
+
+  Handle spawn_protection_cvar =
+      FindConVar("sm_lanofdoom_spawn_protection_remove_delay");
+  if (round_timer_cvar == INVALID_HANDLE) {
+    CloseHandle(round_timer_cvar);
+    CloseHandle(respawn_enabled_cvar);
+    CloseHandle(remove_objectives_cvar);
     return;
   }
 
   Handle gungame_cvar = FindConVar("sm_lanofdoom_gungame_enabled");
   if (gungame_cvar == INVALID_HANDLE) {
-    CloseHandle(deathmatch_cvar);
+    CloseHandle(round_timer_cvar);
+    CloseHandle(respawn_enabled_cvar);
+    CloseHandle(remove_objectives_cvar);
+    CloseHandle(spawn_protection_cvar);
     return;
   }
 
   map_name[3] = '\0';
   if (StrEqual(map_name, "gg_")) {
-    SetConVarBool(deathmatch_cvar, true);
+    SetConVarBool(round_timer_cvar, true);
+    SetConVarBool(respawn_enabled_cvar, true);
+    SetConVarBool(remove_objectives_cvar, true);
+    SetConVarFloat(spawn_protection_cvar, 4.0);
     SetConVarBool(gungame_cvar, true);
+    SetConVarBool(g_friendyfire_cvar, true);
   } else {
-    SetConVarBool(deathmatch_cvar, false);
+    SetConVarBool(round_timer_cvar, false);
+    SetConVarBool(respawn_enabled_cvar, false);
+    SetConVarBool(remove_objectives_cvar, false);
+    SetConVarFloat(spawn_protection_cvar, 0.0);
     SetConVarBool(gungame_cvar, false);
   }
 
-  CloseHandle(deathmatch_cvar);
+  CloseHandle(round_timer_cvar);
+  CloseHandle(respawn_enabled_cvar);
+  CloseHandle(remove_objectives_cvar);
+  CloseHandle(spawn_protection_cvar);
   CloseHandle(gungame_cvar);
 }
 
@@ -70,6 +108,7 @@ public void OnMapEnd() {
   SetConVarInt(g_airaccelerate_cvar, g_previous_airaccelerate);
   SetConVarInt(g_freezetime_cvar, g_previous_freezetime);
   SetConVarInt(g_gravity_cvar, g_previous_gravity);
+  SetConVarBool(g_friendyfire_cvar, g_previous_friendlyfire);
 }
 
 public void OnPluginStart() {
@@ -81,10 +120,14 @@ public void OnPluginStart() {
 
   g_gravity_cvar = FindConVar("sv_gravity");
   g_previous_gravity = GetConVarInt(g_gravity_cvar);
+
+  g_friendyfire_cvar = FindConVar("mp_friendyfire");
+  g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
 }
 
 public void OnPluginEnd() {
   SetConVarInt(g_airaccelerate_cvar, g_previous_airaccelerate);
   SetConVarInt(g_freezetime_cvar, g_previous_freezetime);
   SetConVarInt(g_gravity_cvar, g_previous_gravity);
+  SetConVarBool(g_friendyfire_cvar, g_previous_friendlyfire);
 }
