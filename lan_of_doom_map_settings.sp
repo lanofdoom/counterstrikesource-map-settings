@@ -64,7 +64,7 @@ public void OnConfigsExecuted() {
   }
 
   Handle spawn_protection_cvar =
-      FindConVar("sm_lanofdoom_spawn_protection_remove_delay");
+      FindConVar("sm_lanofdoom_spawn_protection_time");
   if (round_timer_cvar == INVALID_HANDLE) {
     CloseHandle(round_timer_cvar);
     CloseHandle(respawn_enabled_cvar);
@@ -121,7 +121,7 @@ public void OnPluginStart() {
   g_gravity_cvar = FindConVar("sv_gravity");
   g_previous_gravity = GetConVarInt(g_gravity_cvar);
 
-  g_friendyfire_cvar = FindConVar("mp_friendyfire");
+  g_friendyfire_cvar = FindConVar("mp_friendlyfire");
   g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
 }
 
