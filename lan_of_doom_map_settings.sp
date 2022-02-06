@@ -45,7 +45,7 @@ public void OnConfigsExecuted() {
     SetConVarInt(g_freezetime_cvar, 0);
   }
 
-  Handle round_timer_cvar = FindConVar("sm_lanofdoom_disable_round_timer");
+  Handle round_timer_cvar = FindConVar("sm_lanofdoom_round_timer_disabled");
   if (round_timer_cvar == INVALID_HANDLE) {
     return;
   }
