@@ -81,6 +81,16 @@ public void OnConfigsExecuted() {
     return;
   }
 
+  Handle buyzones_disabled_cvar = FindConVar("sm_lanofdoom_buyzones_disabled");
+  if (buyzones_disabled_cvar == INVALID_HANDLE) {
+    CloseHandle(round_timer_cvar);
+    CloseHandle(respawn_enabled_cvar);
+    CloseHandle(remove_objectives_cvar);
+    CloseHandle(spawn_protection_cvar);
+    CloseHandle(gungame_cvar);
+    return;
+  }
+
   map_name[3] = '\0';
   if (StrEqual(map_name, "gg_")) {
     SetConVarBool(round_timer_cvar, true);
@@ -88,6 +98,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(remove_objectives_cvar, true);
     SetConVarFloat(spawn_protection_cvar, 4.0);
     SetConVarBool(gungame_cvar, true);
+    SetConVarBool(buyzones_disabled_cvar, true);
     SetConVarBool(g_friendyfire_cvar, true);
   } else {
     SetConVarBool(round_timer_cvar, false);
@@ -95,6 +106,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(remove_objectives_cvar, false);
     SetConVarFloat(spawn_protection_cvar, 0.0);
     SetConVarBool(gungame_cvar, false);
+    SetConVarBool(buyzones_disabled_cvar, false);
   }
 
   CloseHandle(round_timer_cvar);
@@ -102,6 +114,7 @@ public void OnConfigsExecuted() {
   CloseHandle(remove_objectives_cvar);
   CloseHandle(spawn_protection_cvar);
   CloseHandle(gungame_cvar);
+  CloseHandle(buyzones_disabled_cvar);
 }
 
 public void OnMapEnd() {
