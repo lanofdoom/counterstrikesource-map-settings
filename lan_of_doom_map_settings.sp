@@ -102,6 +102,18 @@ public void OnConfigsExecuted() {
     return;
   }
 
+  Handle paintball_enabled_cvar = FindConVar("sm_paintball_mode_enabled");
+  if (paintball_enabled_cvar == INVALID_HANDLE) {
+    CloseHandle(round_timer_cvar);
+    CloseHandle(respawn_enabled_cvar);
+    CloseHandle(remove_objectives_cvar);
+    CloseHandle(spawn_protection_cvar);
+    CloseHandle(gungame_cvar);
+    CloseHandle(buyzones_disabled_cvar);
+    CloseHandle(radar_disabled_cvar);
+    return;
+  }
+
   map_name[3] = '\0';
   if (StrEqual(map_name, "gg_")) {
     SetConVarBool(round_timer_cvar, true);
@@ -111,6 +123,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(gungame_cvar, true);
     SetConVarBool(buyzones_disabled_cvar, true);
     SetConVarBool(radar_disabled_cvar, true);
+    SetConVarBool(paintball_enabled_cvar, true);
     SetConVarBool(g_friendyfire_cvar, true);
   } else {
     SetConVarBool(round_timer_cvar, false);
@@ -120,6 +133,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(gungame_cvar, false);
     SetConVarBool(buyzones_disabled_cvar, false);
     SetConVarBool(radar_disabled_cvar, false);
+    SetConVarBool(paintball_enabled_cvar, false);
   }
 
   CloseHandle(round_timer_cvar);
@@ -129,6 +143,7 @@ public void OnConfigsExecuted() {
   CloseHandle(gungame_cvar);
   CloseHandle(buyzones_disabled_cvar);
   CloseHandle(radar_disabled_cvar);
+  CloseHandle(paintball_enabled_cvar);
 }
 
 public void OnMapEnd() {
