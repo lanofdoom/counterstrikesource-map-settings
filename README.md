@@ -1,4 +1,4 @@
-# LAN of DOOM Max Cash plugin
+# LAN of DOOM Map Settings plugin
 SourceMod plugin for CS:S automatically setting the LAN of DOOM's preferred map settings on map load.
 
 # Building
