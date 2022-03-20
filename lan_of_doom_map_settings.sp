@@ -225,6 +225,10 @@ public void OnPluginStart() {
   g_friendyfire_cvar = FindConVar("mp_friendlyfire");
   g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
 
+  g_flashbangs = CreateArray();
+  g_hegrenades = CreateArray();
+  g_smokegrenades = CreateArray();
+
   HookEvent("round_start", OnRoundStart);
 }
 
