@@ -1,24 +1,86 @@
 #include <sourcemod>
 
-#define MAX_MAP_NAME_LENGTH 256
-
-Handle g_airaccelerate_cvar;
-int g_previous_airaccelerate;
-
-Handle g_freezetime_cvar;
-int g_previous_freezetime;
-
-Handle g_gravity_cvar;
-int g_previous_gravity;
-
-Handle g_friendyfire_cvar;
-bool g_previous_friendlyfire;
+#define MAX_FLASHBANGS_PER_ROUND 2
+#define MAX_HEGRENADES_PER_ROUND 2
+#define MAX_SMOKEGRENADES_PER_ROUND 2
 
 public const Plugin myinfo = {
     name = "Map Settings", author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.5.0",
+    version = "1.6.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
+
+static Handle g_airaccelerate_cvar;
+static Handle g_freezetime_cvar;
+static Handle g_gravity_cvar;
+static Handle g_friendyfire_cvar;
+
+static int g_previous_airaccelerate;
+static int g_previous_freezetime;
+int g_previous_gravity;
+bool g_previous_friendlyfire;
+
+static ArrayList g_flashbangs;
+static ArrayList g_hegrenades;
+static ArrayList g_smokegrenades;
+
+//
+// Logic
+//
+
+static Action TryBuyGrenade(int userid, ArrayList list, int max) {
+  while (userid <= list.Length) {
+    list.Push(0);
+  }
+
+  int grenades = list.Get(userid) + 1;
+  if (grenades >= max) {
+    return Plugin_Stop;
+  }
+
+  list.Set(userid, grenades);
+
+  return Plugin_Continue;
+}
+
+//
+// Hooks
+//
+
+public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {  
+  g_flashbangs.Clear();
+  g_hegrenades.Clear();
+  g_smokegrenades.Clear();
+}
+
+//
+// Forwards
+//
+
+public Action CS_OnBuyCommand(int client, const char[] weapon) {
+  char map_name[PLATFORM_MAX_PATH];
+  GetCurrentMap(map_name, PLATFORM_MAX_PATH);
+
+  if (StrContains(map_name, "cs_") != 0 &&
+      StrContains(map_name, "de_") != 0) {
+    return Plugin_Continue;
+  }
+
+  int userid = GetClientUserId(client);
+  if (!userid) {
+    return Plugin_Continue;
+  }
+
+  if (StrEqual(weapon, "weapon_flashbang")) {
+    return TryBuyGrenade(userid, g_flashbangs, MAX_FLASHBANGS_PER_ROUND);
+  } else if (StrEqual(weapon, "weapon_hegrenade")) {
+    return TryBuyGrenade(userid, g_hegrenades, MAX_HEGRENADES_PER_ROUND);
+  } else if (StrEqual(weapon, "weapon_smokegrenade")) {
+    return TryBuyGrenade(userid, g_smokegrenades, MAX_SMOKEGRENADES_PER_ROUND);
+  } else {
+    return Plugin_Continue;
+  }
+}
 
 public void OnConfigsExecuted() {
   g_previous_airaccelerate = GetConVarInt(g_airaccelerate_cvar);
@@ -26,8 +88,8 @@ public void OnConfigsExecuted() {
   g_previous_gravity = GetConVarInt(g_gravity_cvar);
   g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
 
-  char map_name[MAX_MAP_NAME_LENGTH];
-  GetCurrentMap(map_name, MAX_MAP_NAME_LENGTH);
+  char map_name[PLATFORM_MAX_PATH];
+  GetCurrentMap(map_name, PLATFORM_MAX_PATH);
 
   if (StrEqual(map_name, "scoutzknivez")) {
     SetConVarInt(g_airaccelerate_cvar, 999999);
@@ -162,6 +224,8 @@ public void OnPluginStart() {
 
   g_friendyfire_cvar = FindConVar("mp_friendlyfire");
   g_previous_friendlyfire = GetConVarBool(g_friendyfire_cvar);
+
+  HookEvent("round_start", OnRoundStart);
 }
 
 public void OnPluginEnd() {
