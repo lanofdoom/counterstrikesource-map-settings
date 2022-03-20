@@ -17,7 +17,7 @@ bool g_previous_friendlyfire;
 public const Plugin myinfo = {
     name = "Map Settings", author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.3.0",
+    version = "1.4.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
 public void OnConfigsExecuted() {
@@ -34,13 +34,11 @@ public void OnConfigsExecuted() {
     SetConVarInt(g_gravity_cvar, 220);
   }
 
-  if (StrEqual(map_name, "aim_ag_texture_city") ||
+  if (StrContains(map_name, "aim_") == 0 ||
+      StrContains(map_name, "fy_") == 0 ||
+      StrEqual(map_name, "$2000$") ||
       StrEqual(map_name, "breakfloor") ||
       StrEqual(map_name, "fun_allinone_css_v2") ||
-      StrEqual(map_name, "fy_iceworld_cssource") ||
-      StrEqual(map_name, "fy_poolday_reloaded") ||
-      StrEqual(map_name, "fy_simpsons_h") ||
-      StrEqual(map_name, "glasstrap_final") ||
       StrEqual(map_name, "scoutzknivez")) {
     SetConVarInt(g_freezetime_cvar, 0);
   }
@@ -114,8 +112,7 @@ public void OnConfigsExecuted() {
     return;
   }
 
-  map_name[3] = '\0';
-  if (StrEqual(map_name, "gg_")) {
+  if (StrContains(map_name, "gg_") == 0) {
     SetConVarBool(round_timer_cvar, true);
     SetConVarBool(respawn_enabled_cvar, true);
     SetConVarBool(remove_objectives_cvar, true);
