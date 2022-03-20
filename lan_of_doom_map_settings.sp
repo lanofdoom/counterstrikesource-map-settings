@@ -17,7 +17,7 @@ bool g_previous_friendlyfire;
 public const Plugin myinfo = {
     name = "Map Settings", author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.4.0",
+    version = "1.5.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
 public void OnConfigsExecuted() {
