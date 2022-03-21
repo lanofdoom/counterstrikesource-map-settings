@@ -1,3 +1,4 @@
+#include <sdktools>
 #include <sourcemod>
 
 #define MAX_FLASHBANGS_PER_ROUND 2
@@ -28,6 +29,17 @@ static ArrayList g_smokegrenades;
 // Logic
 //
 
+static int GetGrenadeCount(int client, const char[] weapon_name) {
+	int weapon = FindEntityByClassname(-1, weapon_name);
+	if (weapon == INVALID_ENT_REFERENCE || !IsValidEntity(weapon)) {
+		return -1;
+  }
+
+	int ammo_type = GetEntProp(weapon, Prop_Data, "m_iPrimaryAmmoType");
+
+	return GetEntProp(client, Prop_Send, "m_iAmmo", _, ammo_type);
+}
+
 static Action TryBuyGrenade(int userid, ArrayList list, int max) {
   while (userid <= list.Length) {
     list.Push(0);
@@ -51,6 +63,27 @@ public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {
   g_flashbangs.Clear();
   g_hegrenades.Clear();
   g_smokegrenades.Clear();
+
+  for (int client = 0; client < MaxClients; client++) {
+    if (!IsClientConnected(client)) {
+      continue;
+    }
+
+    int userid = GetClientUserId(client);
+    if (!userid) {
+      continue;
+    }
+
+    while (g_flashbangs.Length <= userid) {
+      g_flashbangs.Push(0);
+      g_hegrenades.Push(0);
+      g_smokegrenades.Push(0);
+    }
+
+    g_flashbangs.Set(userid, GetGrenadeCount(client, "weapon_flashbang"));
+    g_hegrenades.Set(userid, GetGrenadeCount(client, "weapon_hegrenade"));
+    g_smokegrenades.Set(userid, GetGrenadeCount(client, "weapon_somkegrenade"));
+  }
 }
 
 //
