@@ -64,7 +64,7 @@ public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {
   g_hegrenades.Clear();
   g_smokegrenades.Clear();
 
-  for (int client = 0; client < MaxClients; client++) {
+  for (int client = 1; client <= MaxClients; client++) {
     if (!IsClientConnected(client)) {
       continue;
     }
