@@ -30,23 +30,23 @@ static ArrayList g_smokegrenades;
 //
 
 static int GetGrenadeCount(int client, const char[] weapon_name) {
-	int weapon = FindEntityByClassname(-1, weapon_name);
-	if (weapon == INVALID_ENT_REFERENCE || !IsValidEntity(weapon)) {
-		return -1;
+  int weapon = FindEntityByClassname(-1, weapon_name);
+  if (weapon == INVALID_ENT_REFERENCE || !IsValidEntity(weapon)) {
+    return -1;
   }
 
-	int ammo_type = GetEntProp(weapon, Prop_Data, "m_iPrimaryAmmoType");
+  int ammo_type = GetEntProp(weapon, Prop_Data, "m_iPrimaryAmmoType");
 
-	return GetEntProp(client, Prop_Send, "m_iAmmo", _, ammo_type);
+  return GetEntProp(client, Prop_Send, "m_iAmmo", _, ammo_type);
 }
 
 static Action TryBuyGrenade(int userid, ArrayList list, int max) {
-  while (userid <= list.Length) {
+  while (list.Length <= userid) {
     list.Push(0);
   }
 
   int grenades = list.Get(userid) + 1;
-  if (grenades >= max) {
+  if (grenades > max) {
     return Plugin_Stop;
   }
 
@@ -59,7 +59,7 @@ static Action TryBuyGrenade(int userid, ArrayList list, int max) {
 // Hooks
 //
 
-public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {  
+public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {
   g_flashbangs.Clear();
   g_hegrenades.Clear();
   g_smokegrenades.Clear();
@@ -82,7 +82,7 @@ public void OnRoundStart(Event event, const char[] name, bool dont_broadcast) {
 
     g_flashbangs.Set(userid, GetGrenadeCount(client, "weapon_flashbang"));
     g_hegrenades.Set(userid, GetGrenadeCount(client, "weapon_hegrenade"));
-    g_smokegrenades.Set(userid, GetGrenadeCount(client, "weapon_somkegrenade"));
+    g_smokegrenades.Set(userid, GetGrenadeCount(client, "weapon_smokegrenade"));
   }
 }
 
@@ -94,8 +94,7 @@ public Action CS_OnBuyCommand(int client, const char[] weapon) {
   char map_name[PLATFORM_MAX_PATH];
   GetCurrentMap(map_name, PLATFORM_MAX_PATH);
 
-  if (StrContains(map_name, "cs_") != 0 &&
-      StrContains(map_name, "de_") != 0) {
+  if (StrContains(map_name, "cs_") == 0 || StrContains(map_name, "de_") == 0) {
     return Plugin_Continue;
   }
 
@@ -104,11 +103,14 @@ public Action CS_OnBuyCommand(int client, const char[] weapon) {
     return Plugin_Continue;
   }
 
-  if (StrEqual(weapon, "weapon_flashbang")) {
+  if (StrEqual(weapon, "flashbang") &&
+      GetGrenadeCount(client, "weapon_flashbang") < 2) {
     return TryBuyGrenade(userid, g_flashbangs, MAX_FLASHBANGS_PER_ROUND);
-  } else if (StrEqual(weapon, "weapon_hegrenade")) {
+  } else if (StrEqual(weapon, "hegrenade") &&
+             GetGrenadeCount(client, "weapon_hegrenade") < 1) {
     return TryBuyGrenade(userid, g_hegrenades, MAX_HEGRENADES_PER_ROUND);
-  } else if (StrEqual(weapon, "weapon_smokegrenade")) {
+  } else if (StrEqual(weapon, "smokegrenade") &&
+             GetGrenadeCount(client, "weapon_smokegrenade") < 1) {
     return TryBuyGrenade(userid, g_smokegrenades, MAX_SMOKEGRENADES_PER_ROUND);
   } else {
     return Plugin_Continue;
@@ -129,12 +131,12 @@ public void OnConfigsExecuted() {
     SetConVarInt(g_gravity_cvar, 220);
   }
 
-  if (StrContains(map_name, "aim_") == 0 ||
-      StrContains(map_name, "fy_") == 0 ||
-      StrEqual(map_name, "$2000$") ||
-      StrEqual(map_name, "breakfloor") ||
-      StrEqual(map_name, "fun_allinone_css_v2") ||
-      StrEqual(map_name, "scoutzknivez")) {
+  if (StrContains(map_name, "cs_") != 0 &&
+      StrContains(map_name, "de_") != 0 &&
+      !StrEqual(map_name, "aim_ag_texture2") &&
+      !StrEqual(map_name, "aim_ag_texture_city") &&
+      !StrEqual(map_name, "breakfloor") &&
+      !StrEqual(map_name, "glasstrap_final")) {
     SetConVarInt(g_freezetime_cvar, 0);
   }
 
