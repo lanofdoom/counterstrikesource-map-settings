@@ -225,7 +225,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(remove_objectives_cvar, false);
     SetConVarFloat(spawn_protection_cvar, 0.0);
     SetConVarBool(gungame_cvar, false);
-    SetConVarBool(buyzones_disabled_cvar, false);
+    SetConVarBool(buyzones_disabled_cvar, StrContains(map_name, "fy_"));
     SetConVarBool(radar_disabled_cvar, false);
     SetConVarBool(paintball_enabled_cvar, false);
   }
