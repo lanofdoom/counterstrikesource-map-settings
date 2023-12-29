@@ -8,7 +8,7 @@
 public const Plugin myinfo = {
     name = "Map Settings", author = "LAN of DOOM",
     description = "Sets map settings preferred by the LAN of DOOM",
-    version = "1.6.0",
+    version = "1.7.0",
     url = "https://github.com/lanofdoom/counterstrikesource-map-settings"};
 
 static Handle g_airaccelerate_cvar;
@@ -225,7 +225,7 @@ public void OnConfigsExecuted() {
     SetConVarBool(remove_objectives_cvar, false);
     SetConVarFloat(spawn_protection_cvar, 0.0);
     SetConVarBool(gungame_cvar, false);
-    SetConVarBool(buyzones_disabled_cvar, StrContains(map_name, "fy_"));
+    SetConVarBool(buyzones_disabled_cvar, StrContains(map_name, "fy_") == 0);
     SetConVarBool(radar_disabled_cvar, false);
     SetConVarBool(paintball_enabled_cvar, false);
   }
